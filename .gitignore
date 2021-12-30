@@ -1,7 +1,6 @@
 # Build dirs and files #
 ########################
-easypaint.pro.user
-easypaint-build-*
+dest
 
 # Compiled source #
 ###################
