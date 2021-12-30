@@ -2,6 +2,10 @@
 ########################
 dest
 
+# Binary #
+##########
+paint
+
 # Compiled source #
 ###################
 *.dll
@@ -21,6 +25,7 @@ dest
 *.rar
 *.tar
 *.zip
+*.app
 
 # OS generated files #
 ######################

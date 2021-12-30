@@ -28,6 +28,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtCore/QTranslator>
+#include <QtCore/QRegularExpression>
 
 #include "mainwindow.h"
 #include "datasingleton.h"
@@ -54,23 +55,23 @@ int main(int argc, char *argv[])
 
     QStringList args = a.arguments();
 
-    QRegExp rxArgHelp("--help");
-    QRegExp rxArgH("-h");
-    QRegExp rxArgVersion("--version");
-    QRegExp rxArgV("-v");
+    QRegularExpression rxArgHelp("--help");
+    QRegularExpression rxArgH("-h");
+    QRegularExpression rxArgVersion("--version");
+    QRegularExpression rxArgV("-v");
 
     bool isHelp(false), isVer(false);
     QStringList filePaths;
 
     for(int i(1); i < args.size(); ++i)
     {
-        if (rxArgHelp.indexIn(args.at(i)) != -1  ||
-                rxArgH.indexIn(args.at(i)) != -1)
+        if (rxArgHelp.match(args.at(i)).hasMatch()  ||
+                rxArgH.match(args.at(i)).hasMatch())
         {
             isHelp = true;
         }
-        else if (rxArgVersion.indexIn(args.at(i)) != -1  ||
-                 rxArgV.indexIn(args.at(i)) != -1)
+        else if (rxArgVersion.match(args.at(i)).hasMatch()  ||
+                 rxArgV.match(args.at(i)).hasMatch())
         {
             isVer = true;
         }
