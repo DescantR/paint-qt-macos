@@ -36,6 +36,7 @@ It's my first project but I intend to do as many of these as possbile.
   * Tilting
 * Alpha in color picker
   * Alpha should affect fill operations
+  * Brush should not be dotty in alpha mode
 * Delete button should set the selection to color 2
 * Add visual grid option, with custom grid unit
   * A smart default grid unit should be chosen
@@ -49,7 +50,7 @@ It's my first project but I intend to do as many of these as possbile.
   * Alt and mouse, 'drag move' copy (redraw the edge pixels as the selection is dragged)
   * Alt Shift and mouse, axis-snapped 'drag move' copy
 * Arrowhead options for line tool
-* Line tool should snap to horizontal and vertical axis
+* Line tool should snap to horizontal and vertical axis if shift is pressed
 * Default canvas and window size should be smarter
 * New canvas size should be prefill based on the active view
 * Command A should select all
@@ -61,6 +62,7 @@ It's my first project but I intend to do as many of these as possbile.
 * Tool to recolor black to custom from selection
 * Option to crop canvas to selection in Canvas size tool
 * Canvas size changes should reflect in history
+* Color picker selection should reflect in history
 
 License
 -------
