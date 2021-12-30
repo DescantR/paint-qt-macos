@@ -35,6 +35,7 @@ It's my first project but I intend to do as many of these as possbile.
   * Scaling
   * Tilting
 * Alpha in color picker
+  * Alpha should affect fill operations
 * Delete button should set the selection to color 2
 * Add visual grid option, with custom grid unit
   * A smart default grid unit should be chosen
@@ -59,6 +60,7 @@ It's my first project but I intend to do as many of these as possbile.
 * Tool to recolor to sharp black and white from selection
 * Tool to recolor black to custom from selection
 * Option to crop canvas to selection in Canvas size tool
+* Canvas size changes should reflect in history
 
 License
 -------
