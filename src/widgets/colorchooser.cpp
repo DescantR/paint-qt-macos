@@ -56,6 +56,9 @@ void ColorChooser::setColor(const QColor &color)
 {
     *mCurrentColor = color;
     mPainterColor->begin(mPixmapColor);
+    if (mCurrentColor->alpha() != 255) {
+        mPainterColor->fillRect(0, 0, 20, 20, QColor(255,255,255,255));
+    }
     mPainterColor->fillRect(0, 0, 20, 20, *mCurrentColor);
     mPainterColor->end();
     setPixmap(*mPixmapColor);

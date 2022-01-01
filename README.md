@@ -70,6 +70,8 @@ It's my first project but I intend to do as many of these as possbile.
 * Ellipse and Rect tools should observe Shift for perfect shapes and swatches for fill
   * Swatches should contain a 'no fill' option that makes certain instruments behave differently
   * Eraser and delete should default to white if 'no fill' is selected
+* Command click on swatches should allow for color choosing to swatch color
+  * Shift click on swatch should replace/blend all secondary color with swatch color
 
 License
 -------
