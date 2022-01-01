@@ -76,15 +76,26 @@ void FillInstrument::paint(ImageArea &imageArea, bool isSecondaryColor, bool)
 
     QRgb pixel(imageArea.getImage()->pixel(mStartPoint));
     QColor oldColor(pixel);
-
+    
     if(switchColor != oldColor)
     {
         fillRecurs(mStartPoint.x(), mStartPoint.y(),
-                   switchColor.rgb(), oldColor.rgb(),
+                   switchColor.alpha() == 255 ? switchColor.rgba() : getBlendedColor(switchColor, oldColor),
+                   oldColor.rgba(),
                    *imageArea.getImage());
     }
     imageArea.setEdited(true);
     imageArea.update();
+}
+
+QRgb FillInstrument::getBlendedColor(QColor switchColor, QColor oldColor)
+{
+    QPixmap *tempWorkspace = new QPixmap(1,1);
+    tempWorkspace->fill(oldColor);
+    QPainter *painter = new QPainter();
+    painter->begin(tempWorkspace);
+    painter->fillRect(0,0,1,1,switchColor);
+    return tempWorkspace->toImage().pixel(0,0);
 }
 
 void FillInstrument::fillRecurs(int x, int y, QRgb switchColor, QRgb oldColor, QImage &tempImage)

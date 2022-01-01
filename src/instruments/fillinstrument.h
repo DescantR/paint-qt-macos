@@ -49,6 +49,7 @@ protected:
 
 private:
     void fillRecurs(int x, int y, QRgb switchColor, QRgb oldColor, QImage &tempImage);
+    QRgb getBlendedColor(QColor switchColor, QColor oldColor);
     
 };
 
