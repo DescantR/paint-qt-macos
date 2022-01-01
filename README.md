@@ -9,6 +9,7 @@ Changes
 -------
 * Uses GNU make
 * Ported to QT 6
+* Supports alpha in colors
 
 Installing
 ----------
