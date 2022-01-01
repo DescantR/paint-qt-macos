@@ -30,6 +30,7 @@
 #include <QtCore/QMap>
 
 #include "easypaintenums.h"
+#include "widgets/colorchooser.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -105,7 +106,8 @@ private:
     QMenu *mInstrumentsMenu, *mEffectsMenu, *mToolsMenu;
     QUndoGroup *mUndoStackGroup;
     bool mPrevInstrumentSetted; /**< Used for magnifier */
-private slots:
+public slots:
+    void pushUndoStackColorUpdate(const QColor &prevColor, const QColor &currColor, ColorChooser* &colorChooser);
     void activateTab(const int &index);
     void setNewSizeToSizeLabel(const QSize &size);
     void setNewPosToPosLabel(const QPoint &pos);

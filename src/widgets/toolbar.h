@@ -71,6 +71,7 @@ private:
 signals:
     void sendClearStatusBarColor();
     void sendClearImageSelection();
+    void pushMainUndoStackColorUpdate(const QColor &, const QColor &, ColorChooser* &);
 
 public slots:
     void setPrimaryColorView();
@@ -80,6 +81,7 @@ private slots:
     void penValueChanged(const int &value);
     void primaryColorChanged(const QColor &color);
     void secondaryColorChanged(const QColor &color);
+    void pushToolbarUndoStackColorUpdate(const QColor &prevColor, const QColor &currColor, ColorChooser* &colorChooser);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *);

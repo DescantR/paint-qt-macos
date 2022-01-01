@@ -25,24 +25,46 @@
 
 #include "undocommand.h"
 
-UndoCommand::UndoCommand(const QImage *img, ImageArea &imgArea, QUndoCommand *parent)
-    : QUndoCommand(parent), mPrevImage(*img), mImageArea(imgArea)
+UndoCommand::UndoCommand(const QImage *img, ImageArea *imgArea, QUndoCommand *parent)
+    : QUndoCommand(parent), mPrevImage(*img), mImageArea(imgArea), mType(CommandType::IMAGE)
 {
     mCurrImage = mPrevImage;
 }
 
+UndoCommand::UndoCommand(const QColor prevColor, const QColor currColor, ColorChooser *colorChooser, QUndoCommand *parent)
+    : QUndoCommand(parent), mPrevColor(prevColor), mCurrColor(currColor), mColorChooser(colorChooser), mType(CommandType::COLOR_PICKER)
+{
+
+}
+
 void UndoCommand::undo()
 {
-    mImageArea.clearSelection();
-    mCurrImage = *(mImageArea.getImage());
-    mImageArea.setImage(mPrevImage);
-    mImageArea.update();
-    mImageArea.saveImageChanges();
+    switch (mType) {
+        case CommandType::IMAGE:
+            mImageArea->clearSelection();
+            mCurrImage = *(mImageArea->getImage());
+            mImageArea->setImage(mPrevImage);
+            mImageArea->update();
+            mImageArea->saveImageChanges();
+            break;
+        case CommandType::COLOR_PICKER:
+            mColorChooser->setColor(mPrevColor);
+            mColorChooser->emitColor(mPrevColor);
+            break;
+    }
 }
 
 void UndoCommand::redo()
 {
-    mImageArea.setImage(mCurrImage);
-    mImageArea.update();
-    mImageArea.saveImageChanges();
+    switch (mType) {
+        case CommandType::IMAGE:
+            mImageArea->setImage(mCurrImage);
+            mImageArea->update();
+            mImageArea->saveImageChanges();
+            break;
+        case CommandType::COLOR_PICKER:
+            mColorChooser->setColor(mCurrColor);
+            mColorChooser->emitColor(mCurrColor);
+            break;
+    }
 }

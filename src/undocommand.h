@@ -27,9 +27,11 @@
 #define UNDOCOMMAND_H
 
 #include <QUndoCommand>
+#include <QColor>
 #include <QImage>
 
 #include "imagearea.h"
+#include "widgets/colorchooser.h"
 
 /**
  * @brief Class which provides undo/redo actions
@@ -39,14 +41,21 @@
 class UndoCommand : public QUndoCommand
 {
 public:
-    UndoCommand(const QImage* img, ImageArea &imgArea, QUndoCommand *parent = 0);
+    enum CommandType {IMAGE, COLOR_PICKER};
+    UndoCommand(const QImage *img, ImageArea *imgArea, QUndoCommand *parent = 0);
+    UndoCommand(const QColor prevColor, const QColor currColor, ColorChooser *colorChooser, QUndoCommand *parent = 0);
 
     virtual void undo();
     virtual void redo();
 private:
     QImage mPrevImage;
     QImage mCurrImage;
-    ImageArea& mImageArea;
+    QColor mPrevColor;
+    QColor mCurrColor;
+    ImageArea *mImageArea;
+    ColorChooser *mColorChooser;
+    
+    CommandType mType;
 };
 
 #endif // UNDOCOMMAND_H

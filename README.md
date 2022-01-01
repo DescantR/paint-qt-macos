@@ -52,7 +52,7 @@ It's my first project but I intend to do as many of these as possbile.
 * Arrowhead options for line tool
 * Line tool should snap to horizontal and vertical axis if shift is pressed
 * Default canvas and window size should be smarter
-* New canvas size should be prefill based on the active view
+* New canvas size should be prefilled based on the active view
 * Command A should select all
 * Rotate should function on selection, not canvas
 * Pencil and Eraser should have a 'grid unit' size option
@@ -61,8 +61,15 @@ It's my first project but I intend to do as many of these as possbile.
 * Tool to recolor to sharp black and white from selection
 * Tool to recolor black to custom from selection
 * Option to crop canvas to selection in Canvas size tool
-* Canvas size changes should reflect in history
-* Color picker selection should reflect in history
+* Canvas size changes should reflect in undo history
+* Color picker selection should reflect in undo history
+  * Changing color using swatches should also add to undo history
+  * bug: Changing colors before using the canvas adds to undo history but can't be undone until some change is made to the canvas - mIsEdited?
+* bug: Closing, clicking save, then canceling should not close without saving
+* Right click should be meaningful on swatch, color picker and fill
+* Ellipse and Rect tools should observe Shift for perfect shapes and swatches for fill
+  * Swatches should contain a 'no fill' option that makes certain instruments behave differently
+  * Eraser and delete should default to white if 'no fill' is selected
 
 License
 -------

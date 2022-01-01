@@ -88,11 +88,13 @@ void ToolBar::initializeItems()
     mPColorChooser->setStatusTip(tr("Primary color"));
     mPColorChooser->setToolTip(tr("Primary color"));
     connect(mPColorChooser, SIGNAL(sendColor(QColor)), this, SLOT(primaryColorChanged(QColor)));
+    connect(mPColorChooser, &ColorChooser::sendUndoStackColorUpdate, this, &ToolBar::pushToolbarUndoStackColorUpdate);
 
     mSColorChooser = new ColorChooser(255, 255, 255, this);
     mSColorChooser->setStatusTip(tr("Secondary color"));
     mSColorChooser->setToolTip(tr("Secondary color"));
     connect(mSColorChooser, SIGNAL(sendColor(QColor)), this, SLOT(secondaryColorChanged(QColor)));
+    connect(mSColorChooser, &ColorChooser::sendUndoStackColorUpdate, this, &ToolBar::pushToolbarUndoStackColorUpdate);
 
     QSpinBox *penSizeSpin = new QSpinBox();
     penSizeSpin->setRange(1, 20);
@@ -115,6 +117,11 @@ void ToolBar::initializeItems()
     addWidget(tWidget);
 }
 
+void ToolBar::pushToolbarUndoStackColorUpdate(const QColor &prevColor, const QColor &currColor, ColorChooser* &colorChooser)
+{
+    emit pushMainUndoStackColorUpdate(prevColor, currColor, colorChooser);
+}
+
 void ToolBar::penValueChanged(const int &value)
 {
     DataSingleton::Instance()->setPenSize(value);
@@ -132,12 +139,18 @@ void ToolBar::secondaryColorChanged(const QColor &color)
 
 void ToolBar::setPrimaryColorView()
 {
-    mPColorChooser->setColor(DataSingleton::Instance()->getPrimaryColor());
+    if(mPColorChooser->getColor() != DataSingleton::Instance()->getPrimaryColor()){
+        mPColorChooser->emitUndoStackUpdate(DataSingleton::Instance()->getPrimaryColor());
+        mPColorChooser->setColor(DataSingleton::Instance()->getPrimaryColor());
+    }
 }
 
 void ToolBar::setSecondaryColorView()
 {
-    mSColorChooser->setColor(DataSingleton::Instance()->getSecondaryColor());
+    if(mSColorChooser->getColor() != DataSingleton::Instance()->getSecondaryColor()){
+        mSColorChooser->emitUndoStackUpdate(DataSingleton::Instance()->getSecondaryColor());
+        mSColorChooser->setColor(DataSingleton::Instance()->getSecondaryColor());
+    }
 }
 
 void ToolBar::contextMenuEvent(QContextMenuEvent *)

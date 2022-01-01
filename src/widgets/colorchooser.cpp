@@ -61,6 +61,22 @@ void ColorChooser::setColor(const QColor &color)
     setPixmap(*mPixmapColor);
 }
 
+void ColorChooser::emitUndoStackUpdate(const QColor &color)
+{
+    ColorChooser* self = this;
+    emit sendUndoStackColorUpdate(*mCurrentColor, color, self);
+}
+
+void ColorChooser::emitColor(const QColor &color)
+{
+    emit sendColor(color);
+}
+
+const QColor ColorChooser::getColor()
+{
+    return *mCurrentColor;
+}
+
 void ColorChooser::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
@@ -69,8 +85,9 @@ void ColorChooser::mousePressEvent(QMouseEvent *event)
         {QColorDialog::ShowAlphaChannel, QColorDialog::DontUseNativeDialog});
         if(color.isValid())
         {
+            emitUndoStackUpdate(color);
             setColor(color);
-            emit sendColor(color);
+            emitColor(color);
         }
     }
 }

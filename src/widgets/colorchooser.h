@@ -56,6 +56,9 @@ public:
     explicit ColorChooser(const int &r, const int &g, const int &b,
                           QWidget *parent = 0);
     ~ColorChooser();
+    void emitColor(const QColor &color);
+    void emitUndoStackUpdate(const QColor &color);
+    const QColor getColor();
     
 private:
     QColor *mCurrentColor;
@@ -77,6 +80,7 @@ signals:
      * @param Color to send
      */
     void sendColor(const QColor &);
+    void sendUndoStackColorUpdate(const QColor &, const QColor &, ColorChooser* &);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

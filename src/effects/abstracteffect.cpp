@@ -34,5 +34,5 @@ AbstractEffect::AbstractEffect(QObject *parent) :
 
 void AbstractEffect::makeUndoCommand(ImageArea &imageArea)
 {
-    imageArea.pushUndoCommand(new UndoCommand(imageArea.getImage(), imageArea));
+    imageArea.pushUndoCommand(new UndoCommand(imageArea.getImage(), &imageArea));
 }

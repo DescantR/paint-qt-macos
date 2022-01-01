@@ -29,6 +29,7 @@
 #include "datasingleton.h"
 #include "dialogs/settingsdialog.h"
 #include "widgets/palettebar.h"
+#include "undocommand.h"
 
 #include <QApplication>
 #include <QAction>
@@ -446,6 +447,7 @@ void MainWindow::initializeToolBar()
     addToolBar(Qt::LeftToolBarArea, mToolbar);
     connect(mToolbar, SIGNAL(sendClearStatusBarColor()), this, SLOT(clearStatusBarColor()));
     connect(mToolbar, SIGNAL(sendClearImageSelection()), this, SLOT(clearImageSelection()));
+    connect(mToolbar, &ToolBar::pushMainUndoStackColorUpdate, this, &MainWindow::pushUndoStackColorUpdate);
 }
 
 void MainWindow::initializePaletteBar()
@@ -469,6 +471,15 @@ ImageArea* MainWindow::getImageAreaByIndex(int index)
     QScrollArea *sa = static_cast<QScrollArea*>(mTabWidget->widget(index));
     ImageArea *ia = static_cast<ImageArea*>(sa->widget());
     return ia;
+}
+
+void MainWindow::pushUndoStackColorUpdate(const QColor &prevColor, const QColor &currColor, ColorChooser* &colorChooser)
+{
+    ImageArea *tempArea = getCurrentImageArea();
+    if (tempArea)
+    {
+      tempArea->pushUndoCommand(new UndoCommand(prevColor, currColor, colorChooser));
+    }
 }
 
 void MainWindow::activateTab(const int &index)
