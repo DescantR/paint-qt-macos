@@ -3,6 +3,8 @@ EasyPaint
 
 EasyPaint is a simple graphics painting program. This program is like MS Paint, but nice, lightweight and cross-platform. The Makefile in this fork is specifically for MacOS, but it can be adapted for any OS since QT is a cross-platform framework.
 
+![Screenshot](/res/Screenshot.png)
+
 EasyPaint is a part of QtDesktop project and [Razor-qt's](https://github.com/Razor-qt) [3rd party applications](https://github.com/Razor-qt/razor-qt/wiki/3rd-party-applications).
 
 Changes
