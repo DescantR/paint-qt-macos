@@ -89,6 +89,8 @@ It's my first project but I intend to do as many of these as possbile.
   * Eraser and delete should default to white if 'no fill' is selected
 * Command click on swatches should allow for color choosing to swatch color
   * Shift click on swatch should replace/blend all secondary color with swatch color
+* Tool to 'grow' canvas, by padding edges
+* Button to swap swatch color
 
 License
 -------
