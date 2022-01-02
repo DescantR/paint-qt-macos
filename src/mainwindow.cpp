@@ -58,6 +58,7 @@ MainWindow::MainWindow(QStringList filePaths, QWidget *parent)
 
     mUndoStackGroup = new QUndoGroup(this);
 
+    setStyleSheet("");
     initializeMainMenu();
     initializeToolBar();
     initializePaletteBar();
@@ -90,6 +91,16 @@ void MainWindow::initializeTabWidget()
     mTabWidget->setUsesScrollButtons(true);
     mTabWidget->setTabsClosable(true);
     mTabWidget->setMovable(true);
+    mTabWidget->setTabPosition(QTabWidget::South);
+    mTabWidget->setStyleSheet("QTabWidget::tab-bar { left: 0; } "
+    "QTabWidget::pane { border-top: 0; } "
+    "QTabBar { background-color: #FFFFFF; border-left: 1 solid #a9a9a9} "
+    "QTabBar::tab { padding-top: 8; padding-right: 20; padding-left: 20; padding-bottom: 8; border: 0; } "
+    "QTabBar::tab:first { border-left: 1 solid #a9a9a9 } "
+    "QTabBar::tab:only-one { border-left: 1 solid #a9a9a9 } "
+    "QTabBar::tab:hover { background-color: #e5fced } "
+    "QTabBar::tab:selected { background-color: #ececec; color: black; } "
+    "QTabBar::close-button { image: url(:/media/actions-icons/close-tab.png) } ");
     connect(mTabWidget, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
     connect(mTabWidget, SIGNAL(currentChanged(int)), this, SLOT(enableActions(int)));
     connect(mTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
@@ -119,6 +130,7 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
         QScrollArea *scrollArea = new QScrollArea();
         scrollArea->setAttribute(Qt::WA_DeleteOnClose);
         scrollArea->setBackgroundRole(QPalette::Dark);
+        scrollArea->setStyleSheet("QScrollArea { background-color: #ececec } ");
         scrollArea->setWidget(imageArea);
 
         mTabWidget->addTab(scrollArea, fileName);
@@ -439,6 +451,7 @@ void MainWindow::initializeStatusBar()
     mStatusBar->addPermanentWidget(mPosLabel, 1);
     mStatusBar->addPermanentWidget(mColorPreviewLabel);
     mStatusBar->addPermanentWidget(mColorRGBLabel, -1);
+    mStatusBar->setStyleSheet("QStatusBar {background-color: #ececec; border-top: 1px solid #a9a9a9; padding-left: 3px; padding-right: 3px; } ");
 }
 
 void MainWindow::initializeToolBar()
@@ -453,6 +466,41 @@ void MainWindow::initializeToolBar()
 void MainWindow::initializePaletteBar()
 {
     mPaletteBar = new PaletteBar(mToolbar);
+    mPaletteGridLayout = new QGridLayout();
+    mPaletteGridWidget = new QWidget();
+    mPaletteGridSwatches.append(new PaletteButton(Qt::black));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::white));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::red));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::darkRed));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::green));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::darkGreen));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::blue));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::darkBlue));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::cyan));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::darkCyan));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::magenta));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::darkMagenta));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::yellow));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::darkYellow));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::gray));
+    mPaletteGridSwatches.append(new PaletteButton(Qt::gray));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::black));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::white));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::red));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::darkRed));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::green));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::darkGreen));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::blue));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::darkBlue));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::cyan));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::darkCyan));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::magenta));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::darkMagenta));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::yellow));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::darkYellow));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::gray));
+    mPaletteBarSwatches.append(new PaletteButton(Qt::gray));
+    mPaletteBar->initializeItems(&mPaletteBarSwatches, mPaletteGridLayout, mPaletteGridWidget, &mPaletteGridSwatches);
     addToolBar(Qt::BottomToolBarArea, mPaletteBar);
 }
 

@@ -11,6 +11,8 @@ PaletteButton::PaletteButton(const QColor &color)
     pixmap.fill(color);
     setIcon(pixmap);
     setStatusTip(color.name());
+    setObjectName("Picker");
+    setStyleSheet("#Picker { border: 1px solid #bfbfbf; } ");
 }
 
 void PaletteButton::mousePressEvent(QMouseEvent *event)

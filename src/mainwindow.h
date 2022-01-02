@@ -28,7 +28,9 @@
 
 #include <QMainWindow>
 #include <QtCore/QMap>
+#include <QGridLayout>
 
+#include "widgets/palettebutton.h"
 #include "easypaintenums.h"
 #include "widgets/colorchooser.h"
 
@@ -100,6 +102,11 @@ private:
 
     QMap<InstrumentsEnum, QAction*> mInstrumentsActMap;
     QMap<EffectsEnum, QAction*> mEffectsActMap;
+    QList<PaletteButton*> mPaletteGridSwatches;
+    QList<PaletteButton*> mPaletteBarSwatches;
+    QList<QAction*> mPaletteActList;
+    QGridLayout* mPaletteGridLayout;
+    QWidget* mPaletteGridWidget;
     QAction *mSaveAction, *mSaveAsAction, *mCloseAction, *mPrintAction,
             *mUndoAction, *mRedoAction, *mCopyAction, *mCutAction,
             *mNewAction, *mOpenAction, *mExitAction, *mPasteAction, *mZoomInAction, *mZoomOutAction;

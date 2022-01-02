@@ -37,6 +37,7 @@ ToolBar::ToolBar(const QMap<InstrumentsEnum, QAction *> &actMap, QWidget *parent
     QToolBar(tr("Instruments"), parent), mActMap(actMap)
 {
     setMovable(false);
+    setStyleSheet("QToolBar { background-color: #FFFFFF; border: 0;} ");
     initializeItems();
     mPrevInstrumentSetted = false;
 }
@@ -48,6 +49,10 @@ QToolButton* ToolBar::createToolButton(QAction *act)
     toolButton->setMaximumSize(QSize(30, 30));
     toolButton->setDefaultAction(act);
     toolButton->setStatusTip(act->text());
+    toolButton->setStyleSheet("QToolButton { border-radius: 6px; } "
+    "QToolButton:checked { background-color: #e5fced; border: 1px solid #ccfad8} "
+    "QToolButton:hover { background-color: #e5fced } "
+    "QToolButton:pressed { background-color: #e5fced; } ");
     return toolButton;
 }
 
@@ -115,6 +120,7 @@ void ToolBar::initializeItems()
     addWidget(bWidget);
     addSeparator();
     addWidget(tWidget);
+    
 }
 
 void ToolBar::pushToolbarUndoStackColorUpdate(const QColor &prevColor, const QColor &currColor, ColorChooser* &colorChooser)

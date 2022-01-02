@@ -30,6 +30,7 @@
 #include "palettebutton.h"
 
 #include <QToolBar>
+#include <QGridLayout>
 
 /**
   * @brief Toolbar with some number of differrent colors
@@ -41,13 +42,17 @@ class PaletteBar : public QToolBar
 
 public:
     PaletteBar(ToolBar *toolBar);
-
-private:
     /**
       * @brief Color buttons initializing
       *
       */
-    void initializeItems();
+    void initializeItems(QList<PaletteButton *> *barSwatches, QGridLayout *sLayout, QWidget *gridWidget, QList<PaletteButton *> *gridSwatches);
+    void hideGridPalette();
+    void showGridPalette();
+    void hideBarPalette();
+    void showBarPalette();
+
+private:
     /**
      * @brief Create new QToolButton
      *
@@ -55,10 +60,15 @@ private:
      * @param color Color of button
      * @return QToolButton Created QToolButton.
      */
-
+    QList<QAction *> actionlist;
     PaletteButton *mColorButton;
+    QAction *swatch;
     ToolBar *mToolBar;
     bool mIsRightButtonCLicked;
+    bool mStartRepaint;
+    bool mRepaintedGrid;
+    void paintEvent(QPaintEvent *event);
+    void moveEvent(QMoveEvent *event);
 
 private slots:
     void colorClicked();

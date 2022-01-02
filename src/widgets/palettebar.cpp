@@ -26,75 +26,78 @@
 #include "palettebar.h"
 #include "../datasingleton.h"
 
+#include <iostream>
+
 PaletteBar::PaletteBar(ToolBar *toolbar) :
     QToolBar(tr("Colors"))
 {
     mToolBar = toolbar;
-    setMovable(false);
-    initializeItems();
+    setMovable(true);
+    setStyleSheet("QToolBar { background-color: #FFFFFF; border: 0; } ");
 }
 
-void PaletteBar::initializeItems()
+void PaletteBar::initializeItems(QList<PaletteButton *> *barSwatches, QGridLayout *sLayout, QWidget *gridWidget, QList<PaletteButton *> *gridSwatches)
 {
-    mColorButton = new PaletteButton(Qt::black);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
+    sLayout->setContentsMargins(3, 3, 3, 3);
+  
+    for (int i = 0; i < 16; i++) {
+        actionlist.append(addWidget(barSwatches->at(i)));
+        connect(barSwatches->at(i), &PaletteButton::colorPicked, this, &PaletteBar::colorClicked);
+        sLayout->addWidget(gridSwatches->at(i), i/2, i%2);
+        connect(gridSwatches->at(i), &PaletteButton::colorPicked, this, &PaletteBar::colorClicked);
+    }
+    
+    gridWidget->setLayout(sLayout);
+    swatch = addWidget(gridWidget);
+    actionlist.append(swatch);
+    
+    hideGridPalette();
+}
 
-    mColorButton = new PaletteButton(Qt::white);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
+void PaletteBar::showBarPalette()
+{
+    for(int i = 0; i < 16; i++){
+        actionlist.at(i)->setVisible(true);
+    }
+}
 
-    mColorButton = new PaletteButton(Qt::red);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
+void PaletteBar::hideBarPalette()
+{
+    for(int i = 0; i < 16; i++){
+        actionlist.at(i)->setVisible(false);
+    }
+}
 
-    mColorButton = new PaletteButton(Qt::darkRed);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
+void PaletteBar::showGridPalette()
+{
+    actionlist.at(16)->setVisible(true);
+}
 
-    mColorButton = new PaletteButton(Qt::green);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
+void PaletteBar::hideGridPalette()
+{
+    actionlist.at(16)->setVisible(false);
+}
 
-    mColorButton = new PaletteButton(Qt::darkGreen);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
+void PaletteBar::moveEvent(QMoveEvent *event)
+{
+    if(!isFloating()){
+        mStartRepaint = true;
+        update();
+    }
+}
 
-    mColorButton = new PaletteButton(Qt::blue);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::darkBlue);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::cyan);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::darkCyan);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::magenta);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::darkMagenta);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::yellow);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::darkYellow);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
-
-    mColorButton = new PaletteButton(Qt::gray);
-    connect(mColorButton, SIGNAL(colorPicked()), this, SLOT(colorClicked()));
-    addWidget(mColorButton);
+void PaletteBar::paintEvent(QPaintEvent *event)
+{
+    if(mStartRepaint && qMax(contentsRect().height(), contentsRect().width()) == contentsRect().width() && !isFloating()){
+        hideGridPalette();
+        showBarPalette();
+        mStartRepaint = false;
+    }
+    if(mStartRepaint && qMax(childrenRect().width(), childrenRect().height()) == childrenRect().height() && childrenRect().width()*2 < contentsRect().width() && !isFloating()){
+        hideBarPalette();
+        showGridPalette();
+        mStartRepaint = false;
+    }
 }
 
 void PaletteBar::colorClicked()
