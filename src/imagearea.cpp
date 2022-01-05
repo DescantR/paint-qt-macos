@@ -526,7 +526,14 @@ void ImageArea::drawCursor()
                         DataSingleton::Instance()->getPenSize()/2);
         break;
     case ERASER:
-        painter.setBrush(QBrush(Qt::white));
+        if(mRightButtonPressed)
+        {
+            painter.setBrush(QBrush(QColor(255,255,255,255)));
+        }
+        else
+        {
+            painter.setBrush(QBrush(DataSingleton::Instance()->getSecondaryColor()));
+        }
         painter.drawEllipse(center, DataSingleton::Instance()->getPenSize()/2,
                         DataSingleton::Instance()->getPenSize()/2);
         break;

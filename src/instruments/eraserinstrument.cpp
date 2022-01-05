@@ -42,6 +42,8 @@ void EraserInstrument::mousePressEvent(QMouseEvent *event, ImageArea &imageArea)
         mStartPoint = mEndPoint = event->pos();
         imageArea.setIsPaint(true);
         makeUndoCommand(imageArea);
+        mImageCopy = *imageArea.getImage();
+        mPath.moveTo(mStartPoint);
     }
 }
 
@@ -50,7 +52,14 @@ void EraserInstrument::mouseMoveEvent(QMouseEvent *event, ImageArea &imageArea)
     if(imageArea.isPaint())
     {
         mEndPoint = event->pos();
-        paint(imageArea, false);
+        if(event->buttons() & Qt::LeftButton)
+        {
+            paint(imageArea, false);
+        }
+        else if(event->buttons() & Qt::RightButton)
+        {
+            paint(imageArea, true);
+        }
         mStartPoint = event->pos();
     }
 }
@@ -60,27 +69,56 @@ void EraserInstrument::mouseReleaseEvent(QMouseEvent *event, ImageArea &imageAre
     if(imageArea.isPaint())
     {
         mEndPoint = event->pos();
-        paint(imageArea);
+        if(event->button() == Qt::LeftButton)
+        {
+            paint(imageArea, false);
+        }
+        else if(event->button() == Qt::RightButton)
+        {
+            paint(imageArea, true);
+        }
+        mPath.clear();
         imageArea.setIsPaint(false);
     }
 }
 
-void EraserInstrument::paint(ImageArea &imageArea, bool, bool)
+void EraserInstrument::paint(ImageArea &imageArea, bool isSecondaryColor, bool)
 {
+    imageArea.setImage(mImageCopy);
     QPainter painter(imageArea.getImage());
-    painter.setPen(QPen(Qt::white,
+    QColor color;
+    if(isSecondaryColor)
+    {
+        color = QColor(255, 255, 255, 255);
+    }
+    else
+    {
+        color = DataSingleton::Instance()->getSecondaryColor();
+    }
+    
+    painter.setPen(QPen(color,
                         DataSingleton::Instance()->getPenSize() * imageArea.getZoomFactor(),
                         Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-
-    if(mStartPoint != mEndPoint)
+    
+    if(color.alpha() == 0){
+        painter.setCompositionMode(QPainter::CompositionMode_Clear);
+    } 
+    else
     {
-        painter.drawLine(mStartPoint, mEndPoint);
+        painter.setOpacity(color.alpha()/255);
     }
-
-    if(mStartPoint == mEndPoint)
+    
+    mPath.lineTo(mEndPoint);
+    
+    if(mPath.length() > 0)
     {
-        painter.drawPoint(mStartPoint);
+      painter.drawPath(mPath);
     }
+    else
+    {
+      painter.drawPoint(mStartPoint);
+    }
+    
     imageArea.setEdited(true);
     //    int rad(DataSingleton::Instance()->getPenSize() + round(sqrt((mStartPoint.x() - mEndPoint.x()) *
     //                                                                 (mStartPoint.x() - mEndPoint.x()) +

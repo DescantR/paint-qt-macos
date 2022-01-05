@@ -124,6 +124,7 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
     else
     {
         imageArea = new ImageArea(false, "", this);
+        imageArea = new ImageArea(false, "", nullptr);
     }
     if (!imageArea->getFileName().isNull())
     {
@@ -483,7 +484,7 @@ void MainWindow::initializePaletteBar()
     mPaletteGridSwatches.append(new PaletteButton(Qt::yellow));
     mPaletteGridSwatches.append(new PaletteButton(Qt::darkYellow));
     mPaletteGridSwatches.append(new PaletteButton(Qt::gray));
-    mPaletteGridSwatches.append(new PaletteButton(Qt::gray));
+    mPaletteGridSwatches.append(new PaletteButton(QColor(255,255,255,0)));
     mPaletteBarSwatches.append(new PaletteButton(Qt::black));
     mPaletteBarSwatches.append(new PaletteButton(Qt::white));
     mPaletteBarSwatches.append(new PaletteButton(Qt::red));
@@ -499,7 +500,7 @@ void MainWindow::initializePaletteBar()
     mPaletteBarSwatches.append(new PaletteButton(Qt::yellow));
     mPaletteBarSwatches.append(new PaletteButton(Qt::darkYellow));
     mPaletteBarSwatches.append(new PaletteButton(Qt::gray));
-    mPaletteBarSwatches.append(new PaletteButton(Qt::gray));
+    mPaletteBarSwatches.append(new PaletteButton(QColor(255,255,255,0)));
     mPaletteBar->initializeItems(&mPaletteBarSwatches, mPaletteGridLayout, mPaletteGridWidget, &mPaletteGridSwatches);
     addToolBar(Qt::BottomToolBarArea, mPaletteBar);
 }

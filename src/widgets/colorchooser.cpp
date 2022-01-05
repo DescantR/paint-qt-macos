@@ -38,11 +38,17 @@ ColorChooser::ColorChooser(const int &r, const int &g, const int &b, QWidget *pa
     mCurrentColor = new QColor(r, g, b);
     mPixmapColor = new QPixmap(20, 20);
     mPainterColor = new QPainter(mPixmapColor);
+    mPainterColor->fillRect(0, 0, 20, 20, QColor(255,255,255,255));
     mPainterColor->fillRect(0, 0, 20, 20, *mCurrentColor);
     mPainterColor->end();
     setMargin(3);
     setAlignment(Qt::AlignHCenter);
-    setPixmap(*mPixmapColor);
+    if (mCurrentColor->alpha() == 0){
+        QPixmap pixmap(":/media/textures/transparent.jpg");
+        setPixmap(pixmap.scaled(20, 20, Qt::IgnoreAspectRatio));
+    } else {
+      setPixmap(*mPixmapColor);
+    }
 }
 
 ColorChooser::~ColorChooser()
@@ -55,13 +61,16 @@ ColorChooser::~ColorChooser()
 void ColorChooser::setColor(const QColor &color)
 {
     *mCurrentColor = color;
-    mPainterColor->begin(mPixmapColor);
-    if (mCurrentColor->alpha() != 255) {
+    if (mCurrentColor->alpha() == 0) {
+        QPixmap pixmap(":/media/textures/transparent.jpg");
+        setPixmap(pixmap.scaled(20, 20, Qt::IgnoreAspectRatio));
+    } else {
+        mPainterColor->begin(mPixmapColor);
         mPainterColor->fillRect(0, 0, 20, 20, QColor(255,255,255,255));
+        mPainterColor->fillRect(0, 0, 20, 20, *mCurrentColor);
+        mPainterColor->end();
+        setPixmap(*mPixmapColor);
     }
-    mPainterColor->fillRect(0, 0, 20, 20, *mCurrentColor);
-    mPainterColor->end();
-    setPixmap(*mPixmapColor);
 }
 
 void ColorChooser::emitUndoStackUpdate(const QColor &color)

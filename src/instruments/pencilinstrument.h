@@ -29,6 +29,7 @@
 #include "abstractinstrument.h"
 
 #include <QtCore/QObject>
+#include <QPainterPath>
 
 /**
  * @brief Pencil instrument class.
@@ -38,6 +39,9 @@ class PencilInstrument : public AbstractInstrument
 {
     Q_OBJECT
 
+private:
+    QPainterPath mPath {};
+    
 public:
     explicit PencilInstrument(QObject *parent = 0);
 
@@ -47,7 +51,6 @@ public:
     
 protected:
     void paint(ImageArea &imageArea, bool isSecondaryColor = false, bool additionalFlag = false);
-    
 };
 
 #endif // PENCILINSTRUMENT_H

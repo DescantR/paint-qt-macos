@@ -29,6 +29,7 @@
 #include "abstractinstrument.h"
 
 #include <QtCore/QObject>
+#include <QPainterPath>
 
 /**
  * @brief Eraser instrument class.
@@ -38,6 +39,9 @@ class EraserInstrument : public AbstractInstrument
 {
     Q_OBJECT
 
+private:
+    QPainterPath mPath {};
+    
 public:
     explicit EraserInstrument(QObject *parent = 0);
     

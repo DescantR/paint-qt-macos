@@ -7,10 +7,16 @@ PaletteButton::PaletteButton(const QColor &color)
     mColor = color;
     setMinimumSize(QSize(30, 30));
     setMaximumSize(QSize(30, 30));
-    QPixmap pixmap(20, 20);
-    pixmap.fill(color);
-    setIcon(pixmap);
-    setStatusTip(color.name());
+    if (color.alpha() == 0){
+        QPixmap pixmap(":/media/textures/transparent.jpg");
+        setIcon(pixmap.scaled(20, 20, Qt::IgnoreAspectRatio));
+        setStatusTip("Transparent");
+    } else {
+        QPixmap pixmap(20, 20);
+        pixmap.fill(color);
+        setIcon(pixmap);
+        setStatusTip(color.name());
+    }
     setObjectName("Picker");
     setStyleSheet("#Picker { border: 1px solid #bfbfbf; } ");
 }

@@ -42,6 +42,8 @@ void PencilInstrument::mousePressEvent(QMouseEvent *event, ImageArea &imageArea)
         mStartPoint = mEndPoint = event->pos();
         imageArea.setIsPaint(true);
         makeUndoCommand(imageArea);
+        mImageCopy = *imageArea.getImage();
+        mPath.moveTo(mStartPoint);
     }
 }
 
@@ -75,35 +77,48 @@ void PencilInstrument::mouseReleaseEvent(QMouseEvent *event, ImageArea &imageAre
         {
             paint(imageArea, true);
         }
+        mPath.clear();
         imageArea.setIsPaint(false);
     }
 }
 
 void PencilInstrument::paint(ImageArea &imageArea, bool isSecondaryColor, bool)
 {
+    imageArea.setImage(mImageCopy);
     QPainter painter(imageArea.getImage());
+    QColor color;
     if(isSecondaryColor)
     {
-        painter.setPen(QPen(DataSingleton::Instance()->getSecondaryColor(),
-                            DataSingleton::Instance()->getPenSize() * imageArea.getZoomFactor(),
-                            Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        color = DataSingleton::Instance()->getSecondaryColor();
     }
     else
     {
-        painter.setPen(QPen(DataSingleton::Instance()->getPrimaryColor(),
-                            DataSingleton::Instance()->getPenSize() * imageArea.getZoomFactor(),
-                            Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        color = DataSingleton::Instance()->getPrimaryColor();
     }
-
-    if(mStartPoint != mEndPoint)
+    
+    painter.setPen(QPen(color,
+                        DataSingleton::Instance()->getPenSize() * imageArea.getZoomFactor(),
+                        Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    
+    if(color.alpha() == 0){
+        painter.setCompositionMode(QPainter::CompositionMode_Clear);
+    } 
+    else
     {
-        painter.drawLine(mStartPoint, mEndPoint);
+        painter.setOpacity(color.alpha()/255);
     }
-
-    if(mStartPoint == mEndPoint)
+    
+    mPath.lineTo(mEndPoint);
+    
+    if(mPath.length() > 0)
     {
-        painter.drawPoint(mStartPoint);
+      painter.drawPath(mPath);
     }
+    else
+    {
+      painter.drawPoint(mStartPoint);
+    }
+    
     imageArea.setEdited(true);
     //    int rad(DataSingleton::Instance()->getPenSize() + round(sqrt((mStartPoint.x() - mEndPoint.x()) *
     //                                                                 (mStartPoint.x() - mEndPoint.x()) +

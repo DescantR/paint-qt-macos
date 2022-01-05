@@ -86,10 +86,10 @@ void EllipseInstrument::paint(ImageArea &imageArea, bool isSecondaryColor, bool)
     painter.setPen(QPen(DataSingleton::Instance()->getPrimaryColor(),
                         DataSingleton::Instance()->getPenSize() * imageArea.getZoomFactor(),
                         Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    if(isSecondaryColor)
-    {
-        painter.setBrush(QBrush(DataSingleton::Instance()->getSecondaryColor()));
-    }
+    //if(isSecondaryColor) /* using secondary click on Mac trackpad is terrible */
+    //{
+    painter.setBrush(QBrush(DataSingleton::Instance()->getSecondaryColor()));
+    //}
     if(mStartPoint != mEndPoint)
     {
         painter.drawEllipse(QRect(mStartPoint, mEndPoint));

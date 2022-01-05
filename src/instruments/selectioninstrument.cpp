@@ -26,6 +26,7 @@
 #include "selectioninstrument.h"
 #include "../imagearea.h"
 #include "../undocommand.h"
+#include "../datasingleton.h"
 #include "math.h"
 
 #include <QPainter>
@@ -186,9 +187,13 @@ void SelectionInstrument::clearSelectionBackground(ImageArea &imageArea)
     if (!mIsSelectionAdjusting)
     {
         QPainter blankPainter(imageArea.getImage());
-        blankPainter.setPen(Qt::white);
-        blankPainter.setBrush(QBrush(Qt::white));
+        blankPainter.setPen(DataSingleton::Instance()->getSecondaryColor());
+        blankPainter.setBrush(QBrush(DataSingleton::Instance()->getSecondaryColor()));
         blankPainter.setBackgroundMode(Qt::OpaqueMode);
+        if(DataSingleton::Instance()->getSecondaryColor().alpha() == 0){
+            blankPainter.setCompositionMode(QPainter::CompositionMode_Clear);
+        }
+        blankPainter.setOpacity(DataSingleton::Instance()->getSecondaryColor().alpha()/255);
         blankPainter.drawRect(QRect(mTopLeftPoint, mBottomRightPoint - QPoint(1, 1)));
         blankPainter.end();
         mImageCopy = *imageArea.getImage();
