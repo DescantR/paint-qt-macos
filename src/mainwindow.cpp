@@ -45,6 +45,8 @@
 #include <QUndoGroup>
 #include <QtCore/QTimer>
 #include <QtCore/QMap>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 MainWindow::MainWindow(QStringList filePaths, QWidget *parent)
     : QMainWindow(parent), mPrevInstrumentSetted(false)
@@ -110,31 +112,37 @@ void MainWindow::initializeTabWidget()
 void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
 {
     ImageArea *imageArea;
+    QGraphicsView *view = new QGraphicsView();
+    QGraphicsScene *scene = new QGraphicsScene();
     QString fileName(tr("Untitled Image"));
     if(isOpen && filePath.isEmpty())
     {
-        imageArea = new ImageArea(isOpen, "", this);
+        imageArea = new ImageArea(isOpen, "", nullptr);
         fileName = imageArea->getFileName();
     }
     else if(isOpen && !filePath.isEmpty())
     {
-        imageArea = new ImageArea(isOpen, filePath, this);
+        imageArea = new ImageArea(isOpen, filePath, nullptr);
         fileName = imageArea->getFileName();
     }
     else
     {
-        imageArea = new ImageArea(false, "", this);
         imageArea = new ImageArea(false, "", nullptr);
     }
     if (!imageArea->getFileName().isNull())
     {
-        QScrollArea *scrollArea = new QScrollArea();
-        scrollArea->setAttribute(Qt::WA_DeleteOnClose);
-        scrollArea->setBackgroundRole(QPalette::Dark);
-        scrollArea->setStyleSheet("QScrollArea { background-color: #ececec } ");
-        scrollArea->setWidget(imageArea);
+        printf("numImageArea%d\n", numScene);
+        imageArea->setToolTip(QString::number(numScene++));
+        printf("Image Area toolTip:%s\n",imageArea->toolTip().toLocal8Bit().data());
+        proxies.append(scene->addWidget(imageArea));
+        view->setScene(scene);
+        imageArea->setAttribute(Qt::WA_DeleteOnClose);
+        view->setAttribute(Qt::WA_DeleteOnClose);
+        view->setBackgroundRole(QPalette::Dark);
+        view->setStyleSheet("QGraphicsView { background-color: #ececec; } ");
+        imageArea->setStyleSheet("QToolTip { opacity: 0; } "); 
 
-        mTabWidget->addTab(scrollArea, fileName);
+        mTabWidget->addTab(view, fileName);
         mTabWidget->setCurrentIndex(mTabWidget->count()-1);
 
         mUndoStackGroup->addStack(imageArea->getUndoStack());
@@ -153,6 +161,8 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
     else
     {
         delete imageArea;
+        delete view;
+        delete scene;
     }
 }
 
@@ -505,11 +515,14 @@ void MainWindow::initializePaletteBar()
     addToolBar(Qt::BottomToolBarArea, mPaletteBar);
 }
 
+/* Assumes/Reuses the image area's tooltip (accessible from the QGraphicsItem) as its index in QList mImageProxies */
 ImageArea* MainWindow::getCurrentImageArea()
 {
     if (mTabWidget->currentWidget()) {
-        QScrollArea *tempScrollArea = qobject_cast<QScrollArea*>(mTabWidget->currentWidget());
-        ImageArea *tempArea = qobject_cast<ImageArea*>(tempScrollArea->widget());
+        ImageArea *tempArea = static_cast<ImageArea*>(proxies.at(
+                                  qobject_cast<QGraphicsScene*>(qobject_cast<QGraphicsView*>(
+                                  mTabWidget->currentWidget())->scene())->items().at(0)->toolTip().toInt()
+                              )->widget());
         return tempArea;
     }
     return NULL;
@@ -517,9 +530,11 @@ ImageArea* MainWindow::getCurrentImageArea()
 
 ImageArea* MainWindow::getImageAreaByIndex(int index)
 {
-    QScrollArea *sa = static_cast<QScrollArea*>(mTabWidget->widget(index));
-    ImageArea *ia = static_cast<ImageArea*>(sa->widget());
-    return ia;
+    ImageArea *tempArea = static_cast<ImageArea*>(proxies.at(
+                              qobject_cast<QGraphicsScene*>(qobject_cast<QGraphicsView*>(
+                              mTabWidget->widget(index))->scene())->items().at(0)->toolTip().toInt()
+                          )->widget());
+    return tempArea;
 }
 
 void MainWindow::pushUndoStackColorUpdate(const QColor &prevColor, const QColor &currColor, ColorChooser* &colorChooser)

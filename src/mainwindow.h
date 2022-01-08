@@ -33,6 +33,7 @@
 #include "widgets/palettebutton.h"
 #include "easypaintenums.h"
 #include "widgets/colorchooser.h"
+#include <QGraphicsProxyWidget>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -113,6 +114,8 @@ private:
     QMenu *mInstrumentsMenu, *mEffectsMenu, *mToolsMenu;
     QUndoGroup *mUndoStackGroup;
     bool mPrevInstrumentSetted; /**< Used for magnifier */
+    QList<QGraphicsProxyWidget*> proxies;
+    int numScene = 0;
 public slots:
     void pushUndoStackColorUpdate(const QColor &prevColor, const QColor &currColor, ColorChooser* &colorChooser);
     void activateTab(const int &index);
