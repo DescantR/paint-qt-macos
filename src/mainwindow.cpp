@@ -30,6 +30,7 @@
 #include "dialogs/settingsdialog.h"
 #include "widgets/palettebar.h"
 #include "undocommand.h"
+#include "imageview.h"
 
 #include <QApplication>
 #include <QAction>
@@ -46,7 +47,6 @@
 #include <QtCore/QTimer>
 #include <QtCore/QMap>
 #include <QGraphicsScene>
-#include <QGraphicsView>
 
 MainWindow::MainWindow(QStringList filePaths, QWidget *parent)
     : QMainWindow(parent), mPrevInstrumentSetted(false)
@@ -112,7 +112,7 @@ void MainWindow::initializeTabWidget()
 void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
 {
     ImageArea *imageArea;
-    QGraphicsView *view = new QGraphicsView();
+    ImageView *view = new ImageView();
     QGraphicsScene *scene = new QGraphicsScene();
     QString fileName(tr("Untitled Image"));
     if(isOpen && filePath.isEmpty())
@@ -131,18 +131,18 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
     }
     if (!imageArea->getFileName().isNull())
     {
-        printf("numImageArea%d\n", numScene);
+        //printf("numImageArea%d\n", numScene);
         imageArea->setToolTip(QString::number(numScene++));
-        printf("Image Area toolTip:%s\n",imageArea->toolTip().toLocal8Bit().data());
+        //printf("Image Area toolTip:%s\n",imageArea->toolTip().toLocal8Bit().data());
         proxies.append(scene->addWidget(imageArea));
-        view->setScene(scene);
+        view->view()->setScene(scene);
         imageArea->setAttribute(Qt::WA_DeleteOnClose);
-        view->setAttribute(Qt::WA_DeleteOnClose);
-        view->setBackgroundRole(QPalette::Dark);
-        view->setStyleSheet("QGraphicsView { background-color: #ececec; } ");
+        view->view()->setAttribute(Qt::WA_DeleteOnClose);
+        view->view()->setBackgroundRole(QPalette::Dark);
+        view->view()->setStyleSheet("QGraphicsView { background-color: #ececec; } ");
         imageArea->setStyleSheet("QToolTip { opacity: 0; } "); 
 
-        mTabWidget->addTab(view, fileName);
+        mTabWidget->addTab(view->view(), fileName);
         mTabWidget->setCurrentIndex(mTabWidget->count()-1);
 
         mUndoStackGroup->addStack(imageArea->getUndoStack());
