@@ -139,7 +139,8 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
         imageArea->setAttribute(Qt::WA_DeleteOnClose);
         view->view()->setAttribute(Qt::WA_DeleteOnClose);
         view->view()->setBackgroundRole(QPalette::Dark);
-        view->view()->setStyleSheet("QGraphicsView { background-color: #ececec; } ");
+        view->view()->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        view->view()->setStyleSheet("QGraphicsView { background-color: #ececec; } QFrame { border: 1px solid #a9a9a9; margin: 0px; } ");
         imageArea->setStyleSheet("QToolTip { opacity: 0; } "); 
 
         mTabWidget->addTab(view->view(), fileName);
