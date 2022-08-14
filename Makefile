@@ -5,8 +5,8 @@
 
 PLAT= macosx
 OUTFILE= paint
-MOC:= /usr/local/Cellar/qt/6.2.2/share/qt/libexec/moc
-RCC:= /usr/local/Cellar/qt/6.2.2/share/qt/libexec/rcc
+MOC:= /opt/homebrew/Cellar/qt/6.3.1_1/share/qt/libexec/moc
+RCC:= /opt/homebrew/Cellar/qt/6.3.1_1/share/qt/libexec/rcc
 SRCS:= $(shell find src -name '*.cpp')
 
 QTMOC_H:= $(shell grep -lR --include \*.h 'Q_OBJECT' src)
@@ -32,9 +32,9 @@ $(info PLAT= ${PLAT})
 #-03
 ifeq ($(PLAT), macosx)
 	CC= cc
-	INCPATH= -Isrc -I/usr/local/include/QtGui -I/usr/local/include/QtCore -I/usr/local/include/QtWidgets -I/usr/local/include/QtPrintSupport 
+	INCPATH= -Isrc -I/opt/homebrew/include/QtGui -I/opt/homebrew/include/QtCore -I/opt/homebrew/include/QtWidgets -I/opt/homebrew/include/QtPrintSupport 
 	CFLAGS= -Wall -ggdb3 -std=c++17 -fno-strict-aliasing $(INCPATH)
-	LDFLAGS= -F/usr/local/lib -F/Library/Frameworks -framework Foundation -framework QtGui -framework QtCore -framework QtWidgets -framework QtPrintSupport -lobjc -lm
+	LDFLAGS= -F/opt/homebrew/Frameworks -F/Library/Frameworks -framework Foundation -framework QtGui -framework QtCore -framework QtWidgets -framework QtPrintSupport -lobjc -lm
 endif
 
 $(info OUTFILE= ${OUTFILE})
@@ -59,7 +59,7 @@ $(filter %.cpp,$(QTMOC_GENSRCS)): dest%.moc.cpp: src%.h
 $(filter %.o,$(QTMOC_OBJS)): dest%.o: dest%.cpp
 	$(MKDIR) $(@D)
 	#DEBUGSTR##(CC) -c #(CFLAGS) #< -o #@
-	ASAN_OPTIONS=detect_leaks=1 /usr/local/opt/llvm/bin/clang++ -c -I/usr/local/include -I/usr/local/opt/llvm/include -fsanitize=address -fno-omit-frame-pointer $(CFLAGS) $< -o $@
+	ASAN_OPTIONS=detect_leaks=1 /opt/homebrew/opt/llvm/bin/clang++ -c -I/opt/homebrew/include -I/opt/homebrew/opt/llvm/include -fsanitize=address -fno-omit-frame-pointer $(CFLAGS) $< -o $@
 
 $(filter %.cpp,$(QTRCC_GENSRCS)): dest%.rcc.cpp: src%.qrc
 	$(MKDIR) $(@D)
@@ -68,18 +68,18 @@ $(filter %.cpp,$(QTRCC_GENSRCS)): dest%.rcc.cpp: src%.qrc
 $(filter %.o,$(QTRCC_OBJS)): dest%.o: dest%.cpp
 	$(MKDIR) $(@D)
 	#DEBUGSTR##(CC) -c #(CFLAGS) #< -o #@
-	ASAN_OPTIONS=detect_leaks=1 /usr/local/opt/llvm/bin/clang++ -c -I/usr/local/include -I/usr/local/opt/llvm/include -fsanitize=address -fno-omit-frame-pointer $(CFLAGS) $< -o $@
+	ASAN_OPTIONS=detect_leaks=1 /opt/homebrew/opt/llvm/bin/clang++ -c -I/opt/homebrew/include -I/opt/homebrew/opt/llvm/include -fsanitize=address -fno-omit-frame-pointer $(CFLAGS) $< -o $@
 
 $(filter %.o,$(CPP_OBJS)): dest%.o: src%.cpp
 	$(MKDIR) $(@D)
 	#DEBUGSTR#-fsanitize=thread ##-fsanitize=undefined -fsanitize=nullability ###(CC) -c #(CFLAGS) #< -o #@
-	ASAN_OPTIONS=detect_leaks=1 /usr/local/opt/llvm/bin/clang++ -c -I/usr/local/include -I/usr/local/opt/llvm/include -fsanitize=address -fno-omit-frame-pointer $(CFLAGS) $< -o $@
+	ASAN_OPTIONS=detect_leaks=1 /opt/homebrew/opt/llvm/bin/clang++ -c -I/opt/homebrew/include -I/opt/homebrew/opt/llvm/include -fsanitize=address -fno-omit-frame-pointer $(CFLAGS) $< -o $@
 
 $(OUTFILE): $(C_OBJS) $(M_OBJS) $(QTMOC_OBJS) $(QTRCC_OBJS) $(CPP_OBJS)
 	$(RM) $(OUTFILE)
 	$(WINDRES)
 	#DEBUGSTR##(CC) #^ #(LDFLAGS) -lstdc++ -o #(OUTFILE)
-	/usr/local/opt/llvm/bin/clang++ $^ $(LDFLAGS) -fsanitize=address -shared-libasan -o $(OUTFILE)
+	/opt/homebrew/opt/llvm/bin/clang++ $^ $(LDFLAGS) -fsanitize=address -shared-libasan -o $(OUTFILE)
 
 macbundle: $(OUTFILE).app
 
