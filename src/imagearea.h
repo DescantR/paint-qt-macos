@@ -247,6 +247,7 @@ signals:
      *
      */
     void sendEnableSelectionInstrument(bool enable);
+    void sendResizeComplete(const QSize&);
     
 private slots:
     void autoSave();

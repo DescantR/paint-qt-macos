@@ -31,6 +31,8 @@
 #include "widgets/palettebar.h"
 #include "undocommand.h"
 #include "imageview.h"
+#include "graphicsscene.h"
+#include "splitter.h"
 
 #include <QApplication>
 #include <QAction>
@@ -47,6 +49,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QMap>
 #include <QGraphicsScene>
+#include <QSplitter>
 
 MainWindow::MainWindow(QStringList filePaths, QWidget *parent)
     : QMainWindow(parent), mPrevInstrumentSetted(false)
@@ -113,7 +116,7 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
 {
     ImageArea *imageArea;
     ImageView *view = new ImageView();
-    QGraphicsScene *scene = new QGraphicsScene();
+    GraphicsScene *scene = new GraphicsScene();
     QString fileName(tr("Untitled Image"));
     if(isOpen && filePath.isEmpty())
     {
@@ -134,14 +137,20 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
         //printf("numImageArea%d\n", numScene);
         imageArea->setToolTip(QString::number(numScene++));
         //printf("Image Area toolTip:%s\n",imageArea->toolTip().toLocal8Bit().data());
-        proxies.append(scene->addWidget(imageArea));
+        Splitter* splitter = new Splitter();
+        splitter->addWidget(imageArea);
+        splitter->setChildrenCollapsible(false);
+        splitter->setOpaqueResize(false);
+        splitter->setStyleSheet("QFrame { padding-left: 20px; padding-top: 20px; padding-right: 14px; padding-bottom: 14px; } ");
+        splitter->resize(imageArea->size().width()+40,imageArea->size().height()+40);
+        proxies.append(scene->addWidget(splitter));
         view->view()->setScene(scene);
         imageArea->setAttribute(Qt::WA_DeleteOnClose);
         view->view()->setAttribute(Qt::WA_DeleteOnClose);
         view->view()->setBackgroundRole(QPalette::Dark);
         view->view()->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         view->view()->setStyleSheet("QGraphicsView { background-color: #ececec; } QFrame { border: 1px solid #a9a9a9; margin: 0px; } ");
-        imageArea->setStyleSheet("QToolTip { opacity: 0; } "); 
+        imageArea->setStyleSheet("QToolTip { opacity: 0; } ");
 
         mTabWidget->addTab(view->view(), fileName);
         mTabWidget->setCurrentIndex(mTabWidget->count()-1);
@@ -152,6 +161,8 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
         connect(imageArea, SIGNAL(sendRestorePreviousInstrument()), this, SLOT(restorePreviousInstrument()));
         connect(imageArea, SIGNAL(sendSetInstrument(InstrumentsEnum)), this, SLOT(setInstrument(InstrumentsEnum)));
         connect(imageArea, SIGNAL(sendNewImageSize(QSize)), this, SLOT(setNewSizeToSizeLabel(QSize)));
+        connect(imageArea, SIGNAL(sendNewImageSize(QSize)), splitter, SLOT(resize_evt(QSize)));
+        connect(imageArea, SIGNAL(sendResizeComplete(QSize)), scene, SLOT(resize(QSize)));
         connect(imageArea, SIGNAL(sendCursorPos(QPoint)), this, SLOT(setNewPosToPosLabel(QPoint)));
         connect(imageArea, SIGNAL(sendColor(QColor)), this, SLOT(setCurrentPipetteColor(QColor)));
         connect(imageArea, SIGNAL(sendEnableCopyCutActions(bool)), this, SLOT(enableCopyCutActions(bool)));
@@ -521,10 +532,10 @@ void MainWindow::initializePaletteBar()
 ImageArea* MainWindow::getCurrentImageArea()
 {
     if (mTabWidget->currentWidget()) {
-        ImageArea *tempArea = static_cast<ImageArea*>(proxies.at(
+        ImageArea *tempArea = static_cast<ImageArea*>(qobject_cast<QSplitter*>(proxies.at(
                                   qobject_cast<QGraphicsScene*>(qobject_cast<QGraphicsView*>(
                                   mTabWidget->currentWidget())->scene())->items().at(0)->toolTip().toInt()
-                              )->widget());
+                              )->widget())->widget(0));
         return tempArea;
     }
     return NULL;
@@ -532,10 +543,10 @@ ImageArea* MainWindow::getCurrentImageArea()
 
 ImageArea* MainWindow::getImageAreaByIndex(int index)
 {
-    ImageArea *tempArea = static_cast<ImageArea*>(proxies.at(
+    ImageArea *tempArea = static_cast<ImageArea*>(qobject_cast<QSplitter*>(proxies.at(
                               qobject_cast<QGraphicsScene*>(qobject_cast<QGraphicsView*>(
                               mTabWidget->widget(index))->scene())->items().at(0)->toolTip().toInt()
-                          )->widget());
+                          )->widget())->widget(0));
     return tempArea;
 }
 

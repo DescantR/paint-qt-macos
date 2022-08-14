@@ -323,18 +323,21 @@ void ImageArea::resizeImage()
 {
     mAdditionalTools->resizeImage();
     emit sendNewImageSize(mImage->size());
+    emit sendResizeComplete(mImage->size());
 }
 
 void ImageArea::resizeCanvas()
 {
     mAdditionalTools->resizeCanvas(mImage->width(), mImage->height(), true);
     emit sendNewImageSize(mImage->size());
+    emit sendResizeComplete(mImage->size());
 }
 
 void ImageArea::rotateImage(bool flag)
 {
     mAdditionalTools->rotateImage(flag);
     emit sendNewImageSize(mImage->size());
+    emit sendResizeComplete(mImage->size());
 }
 
 void ImageArea::applyEffect(EffectsEnum effect)
@@ -406,6 +409,7 @@ void ImageArea::mouseMoveEvent(QMouseEvent *event)
     }
     else if (!qobject_cast<AbstractSelection*>(mInstrumentHandler))
     {
+        emit sendResizeComplete(mImage->size());
         restoreCursor();
     }
     if(event->pos().x() < mImage->width() &&
@@ -426,6 +430,7 @@ void ImageArea::mouseReleaseEvent(QMouseEvent *event)
     {
        mIsResize = false;
        restoreCursor();
+       emit sendResizeComplete(mImage->size());
     }
     else if(DataSingleton::Instance()->getInstrument() != NONE_INSTRUMENT)
     {

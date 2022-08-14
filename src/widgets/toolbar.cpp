@@ -102,11 +102,12 @@ void ToolBar::initializeItems()
     connect(mSColorChooser, &ColorChooser::sendUndoStackColorUpdate, this, &ToolBar::pushToolbarUndoStackColorUpdate);
 
     QSpinBox *penSizeSpin = new QSpinBox();
-    penSizeSpin->setRange(1, 20);
-    penSizeSpin->setValue(1);
+    penSizeSpin->setRange(1, 48);
+    penSizeSpin->setValue(8);
     penSizeSpin->setStatusTip(tr("Pen size"));
     penSizeSpin->setToolTip(tr("Pen size"));
     connect(penSizeSpin, SIGNAL(valueChanged(int)), this, SLOT(penValueChanged(int)));
+    penValueChanged(8);
 
     QGridLayout *tLayout = new QGridLayout();
     tLayout->setContentsMargins(3, 3, 3, 3);
