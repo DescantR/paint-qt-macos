@@ -159,6 +159,11 @@ ImageArea::ImageArea(const bool &isOpen, const QString &filePath, QWidget *paren
     mEffectsHandlers[GAMMA] = new GammaEffect(this);
     mEffectsHandlers[SHARPEN] = new SharpenEffect(this);
     mEffectsHandlers[CUSTOM] = new CustomEffect(this);
+
+    mLoupePixmap = new QPixmap(":/media/instruments-icons/cursor_loupe.png");
+    mPipettePixmap = new QPixmap(":/media/instruments-icons/cursor_pipette.png");
+    mSprayPixmap = new QPixmap(":/media/instruments-icons/cursor_spray.png");
+    mFillPixmap = new QPixmap(":/media/instruments-icons/cursor_fill.png");
 }
 
 ImageArea::~ImageArea()
@@ -290,6 +295,12 @@ void ImageArea::autoSave()
             mIsEdited = false;
         }
     }
+}
+
+void ImageArea::instrumentChange(InstrumentsEnum instrument)
+{
+    unsetCursor();
+    restoreCursor();
 }
 
 void ImageArea::print()
@@ -450,8 +461,7 @@ void ImageArea::restoreCursor()
     case INSTRUMENTS_COUNT:
         break;
     case MAGNIFIER:
-        mPixmap = new QPixmap(":/media/instruments-icons/cursor_loupe.png");
-        mCurrentCursor = new QCursor(*mPixmap);
+        mCurrentCursor = new QCursor(*mLoupePixmap);
         setCursor(*mCurrentCursor);
         break;
     case NONE_INSTRUMENT:
@@ -468,8 +478,7 @@ void ImageArea::restoreCursor()
         setCursor(*mCurrentCursor);
         break;
     case COLORPICKER:
-        mPixmap = new QPixmap(":/media/instruments-icons/cursor_pipette.png");
-        mCurrentCursor = new QCursor(*mPixmap);
+        mCurrentCursor = new QCursor(*mPipettePixmap);
         setCursor(*mCurrentCursor);
         break;
     case RECTANGLE: case ELLIPSE: case LINE: case CURVELINE: case TEXT:
@@ -477,13 +486,11 @@ void ImageArea::restoreCursor()
         setCursor(*mCurrentCursor);
         break;
     case SPRAY:
-        mPixmap = new QPixmap(":/media/instruments-icons/cursor_spray.png");
-        mCurrentCursor = new QCursor(*mPixmap);
+        mCurrentCursor = new QCursor(*mSprayPixmap);
         setCursor(*mCurrentCursor);
         break;
     case FILL:
-        mPixmap = new QPixmap(":/media/instruments-icons/cursor_fill.png");
-        mCurrentCursor = new QCursor(*mPixmap);
+        mCurrentCursor = new QCursor(*mFillPixmap);
         setCursor(*mCurrentCursor);
         break;
     }

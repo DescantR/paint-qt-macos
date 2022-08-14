@@ -147,6 +147,7 @@ void MainWindow::initializeNewTab(const bool &isOpen, const QString &filePath)
         connect(imageArea, SIGNAL(sendColor(QColor)), this, SLOT(setCurrentPipetteColor(QColor)));
         connect(imageArea, SIGNAL(sendEnableCopyCutActions(bool)), this, SLOT(enableCopyCutActions(bool)));
         connect(imageArea, SIGNAL(sendEnableSelectionInstrument(bool)), this, SLOT(instumentsAct(bool)));
+        connect(this, SIGNAL(sendInstrumentChecked(InstrumentsEnum)), imageArea, SLOT(instrumentChange(InstrumentsEnum)));
 
         setWindowTitle(QString("%1 - EasyPaint").arg(fileName));
     }

@@ -201,6 +201,10 @@ private:
     QString mSaveFilter; /**< Supported save formats filter. */
     bool mIsEdited, mIsPaint, mIsResize, mRightButtonPressed;
     QPixmap *mPixmap;
+    QPixmap *mFillPixmap;
+    QPixmap *mSprayPixmap;
+    QPixmap *mPipettePixmap;
+    QPixmap *mLoupePixmap;
     QCursor *mCurrentCursor;
     qreal mZoomFactor;
     QUndoStack *mUndoStack;
@@ -246,6 +250,7 @@ signals:
     
 private slots:
     void autoSave();
+    void instrumentChange(InstrumentsEnum instrument);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
